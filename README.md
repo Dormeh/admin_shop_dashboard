@@ -43,3 +43,9 @@ For correct build via Webpack you must have:
 ## To build project:
 
 `npm run build` - "соберет" проект в "production" режиме.
+
+## To deploy project to GitHub Pages
+
+* `npm run build` - "соберет" проект в "production" режиме.
+* `npm run deploy` - "зальет" содержимое директории `buid` на GitHub Pages, после чего
+ проект будет доступен по адресу `https://<ваш nickname на github>.github.io/course-js.javascript.ru`
