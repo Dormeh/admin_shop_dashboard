@@ -7,8 +7,7 @@ const URL_PATH = process.env.URL_PATH;
 const router = Router.instance();
 
 router
-  .addRoute(new RegExp(`^${URL_PATH}$`), 'dashboard')
-  .addRoute(/^$/, 'dashboard')
+  .addRoute(new RegExp(`(^${URL_PATH}$|^$`), 'dashboard')
   .addRoute(/^products$/, 'products/list')
   .addRoute(/^products\/add$/, 'products/edit')
   .addRoute(/^products\/([\w()-]+)$/, 'products/edit')
