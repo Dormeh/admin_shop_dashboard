@@ -282,12 +282,12 @@ export default class ProductForm {
     liEl.innerHTML = `<input type="hidden" name="url" value="${url}">
                     <input type="hidden" name="source" value="${source}">
       <span>
-      <img src="${URL_PATH}assets/icons/icon-grab.svg" data-grab-handle alt="grab">
+      <img src="../${URL_PATH}assets/icons/icon-grab.svg" data-grab-handle alt="grab">
       <img class="sortable-table__cell-img" alt="Image" src="${escapeHtml(url)}">
       <span>${escapeHtml(source)}</span>
       </span>
       <button type="button">
-      <img src="${URL_PATH}icon-trash.svg" data-delete-handle alt="delete">
+      <img src="../${URL_PATH}icon-trash.svg" data-delete-handle alt="delete">
       </button>`;
     return liEl;
   }
