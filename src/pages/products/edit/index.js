@@ -10,7 +10,7 @@ export default class Page {
   constructor(
     match = ''
   ){
-    this.productId = match.replace(/products\/(.+)/, (...match) => {
+    this.productId = match[0].replace(/products\/(.+)/, (...match) => {
       return match[1] !== 'add' ? match[1] : ''
     });
   }
