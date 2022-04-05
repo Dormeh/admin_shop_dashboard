@@ -8,11 +8,12 @@ const router = Router.instance();
 
 router
   .addRoute(new RegExp(`^${URL_PATH}$`), 'dashboard')
-  .addRoute(new RegExp(`^${URL_PATH}products$`), 'products/list')
-  .addRoute(new RegExp(`^${URL_PATH}products/add$`), 'products/edit')
-  .addRoute(new RegExp(`^${URL_PATH}products/([\\w()-]+)$`), 'products/edit')
-  .addRoute(new RegExp(`^${URL_PATH}sales$`), 'sales')
-  .addRoute(new RegExp(`^${URL_PATH}categories$`), 'categories')
+  .addRoute(/^$/, 'dashboard')
+  .addRoute(/^products$/, 'products/list')
+  .addRoute(/^products\/add$/, 'products/edit')
+  .addRoute(/^products\/([\w()-]+)$/, 'products/edit')
+  .addRoute(/^sales$/, 'sales')
+  .addRoute(/^categories$/, 'categories')
   .addRoute(/^404\/?$/, 'error404')
   .setNotFoundPagePath('error404')
   .listen();
