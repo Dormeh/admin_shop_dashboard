@@ -282,7 +282,7 @@ export default class ProductForm {
     liEl.innerHTML = `<input type="hidden" name="url" value="${url}">
                     <input type="hidden" name="source" value="${source}">
       <span>
-      <img src="../${URL_PATH}assets/icons/icon-grab.svg" data-grab-handle alt="grab">
+      <img src="../${URL_PATH}icon-grab.svg" data-grab-handle alt="grab">
       <img class="sortable-table__cell-img" alt="Image" src="${escapeHtml(url)}">
       <span>${escapeHtml(source)}</span>
       </span>
