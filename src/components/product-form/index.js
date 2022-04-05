@@ -285,7 +285,7 @@ export default class ProductForm {
       <span>${escapeHtml(source)}</span>
       </span>
       <button type="button">
-      <img src="./assets/icons/icon-trash.svg" data-delete-handle alt="delete">
+      <img src="../assets/icons/icon-trash.svg" data-delete-handle alt="delete">
       </button>`;
     return liEl;
   }
