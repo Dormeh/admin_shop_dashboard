@@ -1,6 +1,8 @@
 import SortableList from '../sortable-list/index.js';
 import escapeHtml from '../../utils/escape-html.js';
 import fetchJson from '../../utils/fetch-json.js';
+const URL_PATH = process.env.URL_PATH;
+
 import { log } from 'webpack-dev-server/client/utils/log';
 
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
@@ -280,12 +282,12 @@ export default class ProductForm {
     liEl.innerHTML = `<input type="hidden" name="url" value="${url}">
                     <input type="hidden" name="source" value="${source}">
       <span>
-      <img src="../../assets/icons/icon-grab.svg" data-grab-handle alt="grab">
+      <img src="${URL_PATH}assets/icons/icon-grab.svg" data-grab-handle alt="grab">
       <img class="sortable-table__cell-img" alt="Image" src="${escapeHtml(url)}">
       <span>${escapeHtml(source)}</span>
       </span>
       <button type="button">
-      <img src="../../icon-trash.svg" data-delete-handle alt="delete">
+      <img src="${URL_PATH}icon-trash.svg" data-delete-handle alt="delete">
       </button>`;
     return liEl;
   }
