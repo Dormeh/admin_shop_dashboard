@@ -1,9 +1,9 @@
 const header = [
   {
     id: 'images',
-    title: 'Image',
+    title: 'Фото',
     sortable: false,
-    template: data => {
+    template: (data = []) => {
       return `
           <div class="sortable-table__cell">
             <img class="sortable-table-image" alt="Image" src="${(data[0]) ? data[0].url : ""}">
@@ -13,50 +13,36 @@ const header = [
   },
   {
     id: 'title',
-    title: 'Name',
+    title: 'Название',
     sortable: true,
     sortType: 'string'
   },
   {
     id: 'subcategory',
-    title: 'Subcategory',
+    title: 'Категория',
     sortable: false,
     template: data => {
-      return `
-        <div class="sortable-table__cell">
-          ${(data.category && data.title)  
-            ? `<span data-tooltip=
-              "
-                <div class=&quot;sortable-table-tooltip&quot;>
-                  <span class=&quot;sortable-table-tooltip__category&quot;>${(data.category) ? data.category.title : ''}</span> /
-                  <b class=&quot;sortable-table-tooltip__subcategory&quot;>${data.title}</b>
-                </div>
-              ">
-                ${data.title}
-              </span> `
-            : "-"}
-        </div>
-        `;
+      return `<div class="sortable-table__cell">
+                <span data-tooltip='<div class="sortable-table-tooltip"><span class="sortable-table-tooltip__category">${(data.category) ? data.category.title : ''}</span> / 
+                <b class="sortable-table-tooltip__subcategory">${data.title}</b></div>'>${data.title}</span>
+           </div>`;
     }
   },
   {
     id: 'quantity',
-    title: 'Quantity',
+    title: 'Количество',
     sortable: true,
     sortType: 'number'
   },
   {
     id: 'price',
-    title: 'Price',
+    title: 'Цена',
     sortable: true,
-    sortType: 'number',
-    template: data => {
-      return `<div class="sortable-table__cell">$${data}</div>`;
-    }
+    sortType: 'number'
   },
   {
     id: 'status',
-    title: 'Status',
+    title: 'Статус',
     sortable: true,
     sortType: 'number',
     template: data => {

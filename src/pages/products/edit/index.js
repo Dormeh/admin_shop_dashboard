@@ -1,71 +1,58 @@
 import ProductForm from '../../../components/product-form/index.js';
+import NotificationMessage from '../../../components/notification/index.js'
+
+const BACKEND_URL = process.env.BACKEND_URL;
 
 export default class Page {
-  element;
   subElements = {};
   components = {};
-
-  constructor(match) {
-    this.match = match;
-  }
-
-  async initComponents () {
-    const [, productId] = this.match;
-    const productForm = new ProductForm(productId);
-    await productForm.render();
-    this.components.productForm = productForm;
-  }
-
-  get template () {
-    return `
-    <div class="products-edit">
-      <div class="content__top-panel">
-        <h1 class="page-title">
-          <a href="/products" class="link">Товары</a> / Добавить
-        </h1>
-      </div>
-      <div class="content-box">
-        <div data-element="productForm">
-          <!-- product-form component -->
-        </div>
-      </div>
-    </div>`;
-  }
-
-  async render () {
-    const element = document.createElement('div');
-
-    element.innerHTML = this.template;
-
-    this.element = element.firstElementChild;
-    this.subElements = this.getSubElements(this.element);
-
-    await this.initComponents();
-
-    this.renderComponents();
-
-    return this.element;
-  }
-
-  renderComponents () {
-    Object.keys(this.components).forEach(component => {
-      const root = this.subElements[component];
-      const { element } = this.components[component];
-      root.append(element);
+  url = new URL('api/dashboard/bestsellers', BACKEND_URL);
+  constructor(
+    match = ''
+  ){
+    this.productId = match.replace(/products\/(.+)/, (...match) => {
+      return match[1] !== 'add' ? match[1] : ''
     });
   }
+  initComponents() {
+    const productForm = new ProductForm(this.productId);
 
-  getSubElements ($element) {
-    const elements = $element.querySelectorAll('[data-element]');
-
-    return [...elements].reduce((accum, subElement) => {
-      accum[subElement.dataset.element] = subElement;
-
-      return accum;
-    }, {});
+    this.components = {
+      productForm,
+    };
   }
 
-  destroy () {
+  async render() {
+    this.initComponents();
+    await this.components.productForm.render();
+    this.initEventListeners();
+    return this.components.productForm.element;
+  }
+
+  initEventListeners() {
+    this.components.productForm.element.addEventListener('product-saved', event => {
+      console.error('product-saved', event.detail);
+      const notification = new NotificationMessage('Товар сохранен', {
+        duration: 2000,
+        type: 'success'
+      });
+
+      notification.show();
+    });
+
+    this.components.productForm.element.addEventListener('product-updated', event => {
+      console.error('product-updated', event.detail);
+      const notification = new NotificationMessage('Товар добавлен', {
+        duration: 2000,
+        type: 'success'
+      });
+
+      notification.show();
+    })
+
+  }
+  destroy() {
+    this.subElements = {};
     for (const component of Object.values(this.components)) {
       component.destroy();
     }

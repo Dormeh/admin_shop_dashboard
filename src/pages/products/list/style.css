@@ -1,3 +1,13 @@
+.products-list {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.products-list .sortable-table {
+  --cols: 6;
+}
+
 .products-list form.form-inline {
   grid-template-columns: 3fr 3fr 2fr;
   grid-gap: 46px;
@@ -13,3 +23,19 @@
   grid-template-columns: auto 1fr;
   align-items: center;
 }
+
+.products-list .products-list__container {
+  height: 100%;
+}
+
+.products-edit {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+/* Styles for components  */
+/* components */
+
+/* Styles for pages  */
+/* pages */

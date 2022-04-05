@@ -1,55 +1,43 @@
 export default class NotificationMessage {
-  static activeComponent;
-
-  element; // HTMLElement;
-
-  constructor(
-    message, 
-    {
-      duration,
-      type
-    } = {}) {
-    this.message = message;
+  element;
+  constructor(message = '', {
+    duration = 1000,
+    type = 'success',
+  } = {}) {
     this.duration = duration;
+    this.message = message;
     this.type = type;
-    
     this.render();
-  }
-
-  get template() {
-    return `
-      <div class="notification notification_${this.type} show" style="--value:${this.duration / 1000}s">
-        <div class="notification__content">
-          ${this.message}
-        </div>
-      </div>
-    `;
-  }
-
-  render() {
-
-    if (NotificationMessage.activeComponent) {
-      NotificationMessage.activeComponent.remove();
+    if (NotificationMessage.isAlreadyShow) {
+      NotificationMessage.isAlreadyShow.remove(NotificationMessage.isAlreadyShow);
+    } else {
+      NotificationMessage.isAlreadyShow = false;
     }
-
-    const element = document.createElement('div');
-    element.innerHTML = this.template;
+  }
+  getTemplate () {
+    return `<div class="notification" style="--value:2s">
+    <div class="timer"></div>
+    <div class="inner-wrapper">
+      <div class="notification-header">${this.type}</div>
+      <div class="notification-body">${this.message}</div>
+    </div>
+  </div>`;
+  }
+  render() {
+    const element = document.createElement('div'); // (*)
+    element.innerHTML = this.getTemplate();
     this.element = element.firstElementChild;
-    NotificationMessage.activeComponent = this.element;
+    this.element.classList.add(this.type);
   }
-
-  show(parent = document.body) {
-    parent.append(this.element);
-
-    setTimeout(() => {
-      this.remove();
-    }, this.duration);
+  show(element = document.body) {
+    element.append(this.element);
+    NotificationMessage.isAlreadyShow = this.element;
+    const timer = setTimeout(() => this.remove(), this.duration);
+    return this.element;
   }
-
   remove() {
     this.element.remove();
   }
-
   destroy() {
     this.remove();
   }

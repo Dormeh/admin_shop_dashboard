@@ -5,45 +5,40 @@ export default class DoubleSlider {
   onThumbPointerMove = event => {
     event.preventDefault();
 
-    const MIN_PERCENTAGE = 0;
-    const MAX_PERCENTAGE = 100;
-    const { thumbLeft, thumbRight, inner, progress, from, to } = this.subElements;
-    const { left: innerLeft, right: innerRight, width } = inner.getBoundingClientRect();
+    const { left: innerLeft, right: innerRight, width } = this.subElements.inner.getBoundingClientRect();
 
-    if (this.dragging === thumbLeft) {
+    if (this.dragging === this.subElements.thumbLeft) {
       let newLeft = (event.clientX - innerLeft + this.shiftX) / width;
 
-      if (newLeft < MIN_PERCENTAGE) {
-        newLeft = MIN_PERCENTAGE;
+      if (newLeft < 0) {
+        newLeft = 0;
+      }
+      newLeft *= 100;
+      const right = parseFloat(this.subElements.thumbRight.style.right);
+
+      if (newLeft + right > 100) {
+        newLeft = 100 - right;
       }
 
-      newLeft *= MAX_PERCENTAGE;
+      this.dragging.style.left = this.subElements.progress.style.left = newLeft + '%';
+      this.subElements.from.innerHTML = this.formatValue(this.getValue().from);
+    }
 
-      const right = parseFloat(thumbRight.style.right);
-
-      if (newLeft + right > MAX_PERCENTAGE) {
-        newLeft = MAX_PERCENTAGE - right;
-      }
-
-      this.dragging.style.left = `${newLeft}%`;
-      progress.style.left = `${newLeft}%`;
-      from.innerHTML = this.formatValue(this.getValue().from);
-    } else {
+    if (this.dragging === this.subElements.thumbRight) {
       let newRight = (innerRight - event.clientX - this.shiftX) / width;
 
-      if (newRight < MIN_PERCENTAGE) {
-        newRight = MIN_PERCENTAGE;
+      if (newRight < 0) {
+        newRight = 0;
       }
-      newRight *= MAX_PERCENTAGE;
+      newRight *= 100;
 
-      let left = parseFloat(this.subElements.thumbLeft.style.left);
+      const left = parseFloat(this.subElements.thumbLeft.style.left);
 
-      if (left + newRight > MAX_PERCENTAGE) {
-        newRight = MAX_PERCENTAGE - left;
+      if (left + newRight > 100) {
+        newRight = 100 - left;
       }
-      this.dragging.style.right = `${newRight}%`;
-      progress.style.right = `${newRight}%`;
-      to.innerHTML = this.formatValue(this.getValue().to);
+      this.dragging.style.right = this.subElements.progress.style.right = newRight + '%';
+      this.subElements.to.innerHTML = this.formatValue(this.getValue().to);
     }
   };
 
@@ -70,8 +65,6 @@ export default class DoubleSlider {
   } = {}) {
     this.min = min;
     this.max = max;
-    this.originalMin = this.min;
-    this.originalMax = this.max;
     this.formatValue = formatValue;
     this.selected = selected;
 
@@ -115,13 +108,16 @@ export default class DoubleSlider {
   }
 
   getSubElements(element) {
+    const result = {};
     const elements = element.querySelectorAll('[data-element]');
 
-    return [...elements].reduce((accum, subElement) => {
-      accum[subElement.dataset.element] = subElement;
+    for (const subElement of elements) {
+      const name = subElement.dataset.element;
 
-      return accum;
-    }, {});
+      result[name] = subElement;
+    }
+
+    return result;
   }
 
   remove() {
@@ -135,30 +131,15 @@ export default class DoubleSlider {
   }
 
   update() {
-    const { progress, thumbLeft, thumbRight } = this.subElements;
     const rangeTotal = this.max - this.min;
     const left = Math.floor((this.selected.from - this.min) / rangeTotal * 100) + '%';
     const right = Math.floor((this.max - this.selected.to) / rangeTotal * 100) + '%';
 
-    progress.style.left = left;
-    progress.style.right = right;
+    this.subElements.progress.style.left = left;
+    this.subElements.progress.style.right = right;
 
-    thumbLeft.style.left = left;
-    thumbRight.style.right = right;
-  }
-
-  reset() {
-    const { from, to } = this.subElements;
-
-    this.min = this.originalMin;
-    this.selected.from = this.originalMin;
-    from.innerHTML = this.formatValue(this.originalMin);
-
-    this.max = this.originalMax;
-    this.selected.to = this.originalMax;
-    to.innerHTML = this.formatValue(this.originalMax);
-
-    this.update();
+    this.subElements.thumbLeft.style.left = left;
+    this.subElements.thumbRight.style.right = right;
   }
 
   onThumbPointerDown(event) {
@@ -183,10 +164,9 @@ export default class DoubleSlider {
   }
 
   getValue() {
-    const { thumbLeft, thumbRight } = this.subElements;
     const rangeTotal = this.max - this.min;
-    const { left } = thumbLeft.style;
-    const { right } = thumbRight.style;
+    const { left } = this.subElements.thumbLeft.style;
+    const { right } = this.subElements.thumbRight.style;
 
     const from = Math.round(this.min + parseFloat(left) * 0.01 * rangeTotal);
     const to = Math.round(this.max - parseFloat(right) * 0.01 * rangeTotal);

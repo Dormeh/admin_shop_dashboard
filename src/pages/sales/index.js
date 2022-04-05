@@ -1,112 +1,109 @@
-import SortableTable from '../../components/sortable-table/index.js';
 import RangePicker from '../../components/range-picker/index.js';
-import header from './header.js';
+import SortableTable from '../../components/sortable-table/index.js';
+import header from './sales-header.js';
+
 import fetchJson from '../../utils/fetch-json.js';
+
+const BACKEND_URL = process.env.BACKEND_URL;
 
 export default class Page {
   element;
   subElements = {};
   components = {};
+  url = new URL('api/rest/orders', BACKEND_URL);
 
-  onDateSelect = async (event) => {
-    const { from, to } = event.detail;
-    await this.updateTableComponent(from, to);
+  async updateComponents(from, to) {
+    const data = await this.loadData(from, to);
+
+    this.components.sortableTable.update(data);
   }
 
-  async updateTableComponent (from, to) {
-    const data = await fetchJson(`${process.env.BACKEND_URL}api/rest/orders?createdAt_gte=${from.toISOString()}&createdAt_lte=${to.toISOString()}&_sort=createdAt&_order=desc&_start=0&_end=30`);
-    this.components.sortableTable.addRows(data);
-    // Preserve time range for server side sorting
-    this.components.sortableTable.from = from.toISOString();
-    this.components.sortableTable.to = to.toISOString();
+  loadData(from, to) {
+    this.url.searchParams.set('_start', '0');
+    this.url.searchParams.set('_end', '30');
+    this.url.searchParams.set('_sort', 'title');
+    this.url.searchParams.set('_order', 'asc');
+    this.url.searchParams.set('createdAt_gte', from.toISOString());
+    this.url.searchParams.set('createdAt_lte', to.toISOString());
+    this.components.sortableTable.data = [];
+    return fetchJson(this.url);
   }
 
-  async initComponents () {
-    const to = new Date();
-    const from = new Date(to.getTime() - (30 * 24 * 60 * 60 * 1000));
-
-    const rangePicker = new RangePicker({
-      from,
-      to
-    });
-
-    const sortableTable = new SortableTable(header, {
-      url: "api/rest/orders",
-      from: from.toISOString(),
-      to: to.toISOString(),
+  initComponents() {
+    const now = new Date();
+    const range = {
+      from: new Date(now.setMonth(now.getMonth() - 1)),
+      to: new Date()
+    };
+    const rangePicker = new RangePicker(range);
+    this.url.searchParams.set('createdAt_gte', range.from.toISOString());
+    this.url.searchParams.set('createdAt_lte', range.to.toISOString());
+    const sortableTable = new SortableTable(header,{
+      url: this.url,
       sorted: {
-        id: "createdAt",
-        order: 'desc'
-      }
+        id: 'createdAt',
+        order: 'desc',
+      },
+      clickableString: false
     });
-
-    this.components.sortableTable = sortableTable;
-    this.components.rangePicker = rangePicker;
+    this.components = {
+      rangePicker,
+      sortableTable
+    };
   }
 
-  get template () {
+  get template() {
     return `<div class="sales">
       <div class="content__top-panel">
-        <h2 class="page-title">Sales</h2>
+        <h2 class="page-title">Продажи</h2>
         <!-- RangePicker component -->
         <div data-element="rangePicker"></div>
       </div>
+      <!-- sortable-table component -->
       <div data-element="sortableTable">
-        <!-- sortable-table component -->
       </div>
     </div>`;
   }
 
-  initEventListeners() {
-    document.addEventListener("date-select", this.onDateSelect);
-  }
-
-  removeEventListeners() {
-    document.removeEventListener("date-select", this.onDateSelect);
-  }
-
-  async render () {
+  render() {
     const element = document.createElement('div');
 
     element.innerHTML = this.template;
 
     this.element = element.firstElementChild;
-    this.subElements = this.getSubElements(this.element);
+    this.getSubElements(element);
 
-    await this.initComponents();
-
+    this.initComponents();
     this.renderComponents();
-
-    this.subElements = this.getSubElements(this.element);
-
     this.initEventListeners();
 
     return this.element;
   }
-
-  renderComponents () {
-    Object.keys(this.components).forEach(component => {
-      const root = this.subElements[component];
-      const { element } = this.components[component];
-
-      root.append(element);
+  renderComponents() {
+    for (const component of Object.keys(this.components)) {
+      this.subElements[component].append(this.components[component].element);
+    }
+  }
+  initEventListeners() {
+    this.components.rangePicker.element.addEventListener('date-select', event => {
+      const { from, to } = event.detail;
+      this.updateComponents(from, to);
     });
   }
-
-  getSubElements ($element) {
-    const elements = $element.querySelectorAll('[data-element]');
-
-    return [...elements].reduce((accum, subElement) => {
-      accum[subElement.dataset.element] = subElement;
-
-      return accum;
-    }, {});
+  getSubElements(element) {
+    const arr = element.querySelectorAll('[data-element]');
+    for (const elem of arr) {
+      this.subElements[elem.dataset.element] = elem;
+    }
   }
-
-  destroy () {
+  remove() {
+    this.element.remove();
+  }
+  destroy() {
+    this.subElements = {};
     for (const component of Object.values(this.components)) {
       component.destroy();
     }
-    this.removeEventListeners();
+    this.remove();
   }
 }

@@ -1,61 +1,77 @@
 .notification {
-  background-color: #192a3e;
-  opacity: 0.8;
-  border-radius: 4px;
-  -webkit-animation: fadeOut 0.3s linear;
-          animation: fadeOut 0.3s linear;
-  display: none;
+  width: 150px;
+  font-size: 18px;
+  text-align: center;
+  box-shadow: 0 2px 4px 1px rgba(30, 30, 30, 0.47);
+  border-radius: 5px;
+  animation: calc(var(--value) * 0.1) ease-out calc(var(--value) * 0.9) fadeOut;
   position: fixed;
   right: 75px;
-  bottom: 75px;
+  bottom: 130px;
+  z-index: 1000;
 }
 
-.notification.show {
-  display: block;
-  -webkit-animation: fadeIn 0.3s linear;
-          animation: fadeIn 0.3s linear;
+/* Success */
+.notification.success {
+  background: #cdfccd;
 }
 
-.notification__content {
-  padding: 16px 24px 16px 64px;
-  font-size: 16px;
-  line-height: 20px;
-  color: #ffffff;
-  position: relative;
+.notification.success .timer {
+  background: #52aa75;
 }
 
-.notification.notification_success .notification__content:after,
-.notification.notification_error .notification__content:after {
-  content: "";
-  position: absolute;
-  left: 24px;
-  top: 50%;
-  width: 24px;
-  height: 24px;
-  transform: translate(0, -50%);
-  background-size: 24px 24px;
+/* Error */
+.notification.error {
+  background: #ffe3e3;
 }
 
-.notification.notification_success .notification__content:after {
-  background: url(icon-circle-check.svg) center no-repeat;
+.notification.error .timer {
+  background: #c28585;
 }
 
-.notification.notification_error .notification__content:after {
-  background: url(icon-error.svg) center no-repeat;
+/* Warning */
+.notification.warning {
+  background: #fff9c2;
 }
 
-.notification__content a {
-  color: #9fd7f9;
+.notification.warning .timer {
+  background: #c1c377;
+}
+
+.inner-wrapper {
+  padding: 5px;
+}
+
+.timer {
+  width: 100%;
+  height: 3px;
+  animation: progress var(--value) linear;
+}
+
+.close {
+  width: 12px;
+  height: 12px;
+  display: flex;
   text-decoration: none;
+  align-items: center;
+  justify-content: center;
+  color: #ffe3e3;
+  font-weight: bold;
+  background: #c28585;
+  cursor: pointer;
+  border-radius: 50%;
 }
 
-@-webkit-keyframes fadeOut {
-  from {
-    opacity: 0.8;
-  }
-  to {
-    opacity: 0;
-  }
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  text-transform: capitalize;
+  font-size: 12px;
+  text-indent:10px
+}
+
+.notification-body {
+  font-weight: bold;
 }
 
 @keyframes fadeOut {
@@ -67,20 +83,11 @@
   }
 }
 
-@-webkit-keyframes fadeIn {
+@keyframes progress {
   from {
-    opacity: 0;
+    width: 100%;
   }
   to {
-    opacity: 0.8;
-  }
-}
-
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
-  to {
-    opacity: 0.8;
+    width: 0;
   }
 }
