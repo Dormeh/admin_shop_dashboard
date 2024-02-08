@@ -185,7 +185,7 @@ export default class ProductForm {
     const product = this.getFormData();
 
     try {
-      const result = await fetchJson(`${BACKEND_URL}/api/rest/products`,
+      const result = await fetchJson(`${BACKEND_URL}api/rest/products`,
         {
           method: this.productId ? 'PATCH' : 'PUT',
           headers: {

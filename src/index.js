@@ -8,8 +8,7 @@ const router = Router.instance();
 
 router
   .addRoute(new RegExp(`(^${URL_PATH}$|^$)`), 'dashboard')
-  .addRoute(new RegExp(`(^${URL_PATH}products$|^products$)`), 'products/list')
-  // .addRoute(/^products$/, 'products/list')
+  .addRoute(/^products$/, 'products/list')
   .addRoute(/^products\/add$/, 'products/edit')
   .addRoute(/^products\/([\w()-]+)$/, 'products/edit')
   .addRoute(/^sales$/, 'sales')
