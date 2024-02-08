@@ -3,8 +3,6 @@ import escapeHtml from '../../utils/escape-html.js';
 import fetchJson from '../../utils/fetch-json.js';
 const URL_PATH = process.env.URL_PATH;
 
-import { log } from 'webpack-dev-server/client/utils/log';
-
 const IMGUR_CLIENT_ID = process.env.IMGUR_CLIENT_ID;
 const BACKEND_URL = process.env.BACKEND_URL;
 
