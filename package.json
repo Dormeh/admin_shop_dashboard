@@ -7,7 +7,7 @@
     "start": "npm run build && npm run static-server",
     "develop": "cross-env NODE_ENV=development webpack serve --config ./webpack/webpack.dev.js",
     "deploy": "gh-pages -d build",
-    "build": "npm run clean && cross-env NODE_ENV=production URL_PATH='admin_shop_dashboard/' webpack --config ./webpack/webpack.prod.js",
+    "build": "npm run clean && cross-env NODE_ENV=production URL_PATH='/' webpack --config ./webpack/webpack.prod.js",
     "eslint": "eslint \"src/**/*.js\"",
     "eslint:fix": "eslint --fix \"**/*.js\"",
     "prettier": "prettier --check \"**/*.{js,css,html,md,json}\" --write",
