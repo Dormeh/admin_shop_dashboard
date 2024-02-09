@@ -31,7 +31,7 @@ export default class Page {
 
   initEventListeners() {
     this.components.productForm.element.addEventListener('product-saved', event => {
-      console.error('product-saved', event.detail);
+      if (__IS_DEV__) console.warn('product-saved', event.detail);
       const notification = new NotificationMessage('Товар сохранен', {
         duration: 2000,
         type: 'success'
@@ -41,7 +41,7 @@ export default class Page {
     });
 
     this.components.productForm.element.addEventListener('product-updated', event => {
-      console.error('product-updated', event.detail);
+      if (__IS_DEV__) console.warn('product-updated', event.detail);
       const notification = new NotificationMessage('Товар добавлен', {
         duration: 2000,
         type: 'success'

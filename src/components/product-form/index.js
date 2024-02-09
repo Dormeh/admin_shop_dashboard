@@ -196,7 +196,7 @@ export default class ProductForm {
       this.element.dispatchEvent(event);
 
     } catch (error) {
-      console.error('Ошибка в отправке формы', error);
+      if (__IS_DEV__) console.error('Ошибка в отправке формы', error);
     }
   }
 

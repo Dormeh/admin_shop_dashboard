@@ -30,6 +30,6 @@
   holder.append(rangePicker.element);
 
   rangePicker.element.addEventListener('date-select', event => {
-    console.error(event);
+    if (__IS_DEV__) console.error(event);
   });
 </script>

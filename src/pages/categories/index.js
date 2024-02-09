@@ -88,7 +88,7 @@ export default class Page {
           },
           body: JSON.stringify(elemList)
         });
-      console.log(result);
+      if (__IS_DEV__) console.log(result);
       const notification = new NotificationMessage('Category order saved', {
         duration: 2000,
         type: 'success'
@@ -96,7 +96,7 @@ export default class Page {
 
       notification.show();
     } catch (error) {
-      console.error('Ошибка в отправке формы', error);
+      if (__IS_DEV__) console.error('Ошибка в отправке формы', error);
     }
   }
 
